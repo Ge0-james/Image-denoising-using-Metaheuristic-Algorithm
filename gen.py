@@ -106,7 +106,6 @@ def crossover(parent1, parent2):
 
 
 def mutate(filter):
-
     flattened_filter = filter.flatten()
     l = len(flattened_filter)
     limit1 = random.randint(0, l)
