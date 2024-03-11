@@ -1,5 +1,4 @@
 import numpy as np
-import skimage
 from skimage import img_as_float
 import cv2
 import matplotlib.pyplot as plt
@@ -9,14 +8,11 @@ from skimage.metrics import structural_similarity as ssim_metric
 
 filter_size = 3
 population_size = 50
-num_generations = 500
+num_generations = 10
 threshold_value = 34
-
-# image to float
 
 
 def add_speckle_noise_test(image, sigma):
-    # Set a random seed based on the current time
     np.random.seed(int(time.time()))
 
     # Generate a random Gaussian noise array with the same shape as the image.
@@ -66,18 +62,20 @@ def genetic_algorithm(
 ):
     population = [create_random_filter(filter_size) for _ in range(population_size)]
     for generation in range(num_generations):
-        print(generation)
         fitness_scores = [
             fitness(original_image, noisy_image, filter) for filter in population
         ]
-        selected_indices = np.argsort(fitness_scores)[
-            -1 : (population_size // 2) - 1 : -1
-        ]
+        selected_indices = np.argsort(fitness_scores)[-1 : population_size // 2 : -1]
+
         parents = [population[i] for i in selected_indices]
-        min_fitness_value = min(fitness_scores)
-        if fitness_scores[selected_indices[0]] >= 32:
-            print("found")
-            return parents[0]
+
+        least_filter = parents[-1]
+
+        min_fitness_value = fitness(original_image, noisy_image, least_filter)
+
+        if fitness_scores[selected_indices[0]] >= 34:
+            return parents[selected_indices[0]]
+
         offspring = parents
         while len(offspring) < population_size:
             p1 = random.choice(selected_indices)
@@ -108,8 +106,14 @@ def crossover(parent1, parent2):
 def mutate(filter):
     flattened_filter = filter.flatten()
     l = len(flattened_filter)
-    limit1 = random.randint(0, l)
-    limit2 = random.randint(limit1, l)
-    np.random.shuffle(flattened_filter[limit1:limit2])
+    k = l // 2
+    limit1 = random.randint(0, k)
+    limit2 = random.randint(k, l)
+    shuffled_elements = flattened_filter[limit1:limit2]
+    np.random.shuffle(shuffled_elements)
+    j = 0
+    for i in range(limit1, limit2):
+        flattened_filter[i] = shuffled_elements[j]
+        j = j + 1
     mutated_filter = flattened_filter.reshape(filter.shape)
     return mutated_filter
