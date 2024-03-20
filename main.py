@@ -44,23 +44,24 @@ for file in files:
     cv2.imwrite("output/filtered" + file, filtered_genetic_image_uint8)
     cv2.imwrite("output/noisy" + file, noisy_image_uint8)
     w.append(file + "\n")
-    w.append("gen : " + str(psnr_genetic_filtered) + "\n")
-    w.append("filter : " + str(best_genetic_filter) + "\n")
+    w.append("Filter       : \n" + str(best_genetic_filter) + "\n")
+    w.append("Genetic      : " + str(psnr_genetic_filtered) + "\n")
+    w.append("Differential : " + str(psnr_differential_filtered) + "\n")
 
     # applying lee filter
-    leeimage = o.lee_filter(noisy_image, filter_size)
-    o_psnr = calculate_psnr(original_image, leeimage)
-    w.append("lee : " + str(o_psnr) + "\n")
+    # leeimage = o.lee_filter(noisy_image, filter_size)
+    # o_psnr = calculate_psnr(original_image, leeimage)
+    # w.append("lee : " + str(o_psnr) + "\n")
 
     # applying frost filter
     frostimage = o.frost_filter(noisy_image, filter_size, 2.0)
     o_psnr = calculate_psnr(original_image, frostimage)
-    w.append("frost : " + str(o_psnr) + "\n")
+    w.append("Frost        : " + str(o_psnr) + "\n")
 
     # bm3d
-    bm3dimage = o.bm3d_filter(noisy_image, sigma_psd=0.1)
+    bm3dimage = o.bm3d_filter(noisy_image)
     o_psnr = calculate_psnr(original_image, bm3dimage)
-    w.append("bm3d : " + str(o_psnr) + "\n")
+    w.append("BM3d         : " + str(o_psnr) + "\n")
 
     f.writelines(w)
     print()

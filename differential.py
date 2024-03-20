@@ -5,7 +5,7 @@ import random
 import time
 
 filter_size = 3
-population_size = 50
+population_size = 10
 num_generations = 10
 threshold_value = 34
 
