@@ -5,9 +5,9 @@ import random
 import time
 
 filter_size = 3
-population_size = 10
-num_generations = 10
-threshold_value = 34
+population_size = 100
+num_generations = 100
+threshold_value = 33
 
 
 def add_speckle_noise_test(image, sigma):

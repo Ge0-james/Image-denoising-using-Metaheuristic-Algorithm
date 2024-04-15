@@ -7,8 +7,8 @@ import time
 from skimage.metrics import structural_similarity as ssim_metric
 
 filter_size = 3
-population_size = 10
-num_generations = 10
+population_size = 100
+num_generations = 100
 threshold_value = 34
 
 
@@ -62,6 +62,7 @@ def genetic_algorithm(
 ):
     population = [create_random_filter(filter_size) for _ in range(population_size)]
     for generation in range(num_generations):
+        print(generation)
         fitness_scores = [
             fitness(original_image, noisy_image, filter) for filter in population
         ]
